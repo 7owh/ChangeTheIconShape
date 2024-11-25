@@ -77,21 +77,22 @@
             // 
             this.cuiLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuiLabel3.Content = "Here\\ are\\ some\\ possible\\ reasons:";
+            this.cuiLabel3.Content = "The\\ device\\ \'\\{device}\'\\ isn\'t\\ supported,\\ sorry\\.\\.\\nHere\\ are\\ some\\ possible" +
+    "\\ reasons:";
             this.cuiLabel3.Font = new System.Drawing.Font("Microsoft YaHei UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.cuiLabel3.ForeColor = System.Drawing.Color.DimGray;
             this.cuiLabel3.HorizontalAlignment = CuoreUI.Controls.cuiLabel.HorizontalAlignments.Left;
             this.cuiLabel3.Location = new System.Drawing.Point(15, 54);
             this.cuiLabel3.Margin = new System.Windows.Forms.Padding(32);
             this.cuiLabel3.Name = "cuiLabel3";
-            this.cuiLabel3.Size = new System.Drawing.Size(278, 23);
+            this.cuiLabel3.Size = new System.Drawing.Size(577, 37);
             this.cuiLabel3.TabIndex = 10;
             // 
             // cuiLabel4
             // 
             this.cuiLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuiLabel4.Content = "•\\ Your\\ device\\ is\\ too\\ new\\.";
+            this.cuiLabel4.Content = "•\\ You\\ unplugged\\ the\\ USB\\ Cable\\.";
             this.cuiLabel4.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.cuiLabel4.ForeColor = System.Drawing.Color.White;
             this.cuiLabel4.HorizontalAlignment = CuoreUI.Controls.cuiLabel.HorizontalAlignments.Left;
@@ -120,8 +121,8 @@
             // 
             this.cuiLabel6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cuiLabel6.Content = "This\\ app\\ was\\ tested\\ on\\ an\\ old\\ Huawei\\ phone\\ running\\ Android\\ 10\\.\\nIt\\ i" +
-    "s\\ entirely\\ possible\\ your\\ phone\\ is\\ just\\ too\\ modern\\.";
+            this.cuiLabel6.Content = "If\\ not\\ you,\\ it\\ might\\ just\\ be\\ the\\ cable\\ that\'s\\ loose\\.\\nTry\\ to\\ use\\ a\\" +
+    " cable\\ that\'s\\ firm\\ and\\ stays\\ in\\ the\\ usb\\ port\\.";
             this.cuiLabel6.Font = new System.Drawing.Font("Microsoft YaHei UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.cuiLabel6.ForeColor = System.Drawing.Color.Gray;
             this.cuiLabel6.HorizontalAlignment = CuoreUI.Controls.cuiLabel.HorizontalAlignments.Left;
@@ -314,7 +315,6 @@
 
         private CuoreUI.Controls.cuiLabel cuiLabel2;
         private CuoreUI.Controls.cuiLabel cuiLabel1;
-        private CuoreUI.Controls.cuiLabel cuiLabel3;
         private CuoreUI.Controls.cuiLabel cuiLabel4;
         private CuoreUI.Controls.cuiLabel cuiLabel5;
         private CuoreUI.Controls.cuiLabel cuiLabel6;
@@ -328,5 +328,6 @@
         private CuoreUI.Controls.cuiBorder cuiBorder2;
         private CuoreUI.Controls.cuiBorder cuiBorder3;
         public CuoreUI.Controls.cuiButton cuiButton1;
+        public CuoreUI.Controls.cuiLabel cuiLabel3;
     }
 }

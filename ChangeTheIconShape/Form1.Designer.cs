@@ -38,6 +38,7 @@
             this.cuiControlAnimator1 = new CuoreUI.Components.cuiControlAnimator();
             this.panel1 = new System.Windows.Forms.Panel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.cuiSpinner2 = new CuoreUI.Controls.cuiSpinner();
             this.SuspendLayout();
             // 
             // cuiFormRounder1
@@ -150,6 +151,19 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // cuiSpinner2
+            // 
+            this.cuiSpinner2.ArcColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(101)))), ((int)(((byte)(255)))));
+            this.cuiSpinner2.BackColor = System.Drawing.Color.Black;
+            this.cuiSpinner2.Location = new System.Drawing.Point(379, 220);
+            this.cuiSpinner2.Name = "cuiSpinner2";
+            this.cuiSpinner2.RingColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.cuiSpinner2.RotateSpeed = 2F;
+            this.cuiSpinner2.Rotation = 270.6478F;
+            this.cuiSpinner2.Size = new System.Drawing.Size(42, 42);
+            this.cuiSpinner2.TabIndex = 13;
+            this.cuiSpinner2.Thickness = 3.75F;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -157,6 +171,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.ClientSize = new System.Drawing.Size(800, 482);
             this.Controls.Add(this.controlContainer);
+            this.Controls.Add(this.cuiSpinner2);
             this.Controls.Add(this.cuiButton2);
             this.Controls.Add(this.cuiButton1);
             this.Controls.Add(this.panel1);
@@ -178,6 +193,7 @@
         private CuoreUI.Components.cuiControlAnimator cuiControlAnimator1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Timer timer1;
+        private CuoreUI.Controls.cuiSpinner cuiSpinner2;
     }
 }
 

@@ -35,10 +35,11 @@
             this.cuiLabel1 = new CuoreUI.Controls.cuiLabel();
             this.cuiLabel3 = new CuoreUI.Controls.cuiLabel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.detectedLabel = new CuoreUI.Controls.cuiLabel();
             this.cuiSeparator1 = new CuoreUI.Controls.cuiSeparator();
             this.cuiPictureBox1 = new CuoreUI.Controls.cuiPictureBox();
             this.cuiLabel4 = new CuoreUI.Controls.cuiLabel();
-            this.detectedLabel = new CuoreUI.Controls.cuiLabel();
+            this.device_name_label = new CuoreUI.Controls.cuiLabel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -139,6 +140,18 @@
             this.panel1.Size = new System.Drawing.Size(800, 71);
             this.panel1.TabIndex = 10;
             // 
+            // detectedLabel
+            // 
+            this.detectedLabel.Content = "Device\\ detected,\\ making\\ checks\\.\\.";
+            this.detectedLabel.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.detectedLabel.ForeColor = System.Drawing.Color.DimGray;
+            this.detectedLabel.HorizontalAlignment = CuoreUI.Controls.cuiLabel.HorizontalAlignments.Left;
+            this.detectedLabel.Location = new System.Drawing.Point(18, 46);
+            this.detectedLabel.Name = "detectedLabel";
+            this.detectedLabel.Size = new System.Drawing.Size(629, 18);
+            this.detectedLabel.TabIndex = 12;
+            this.detectedLabel.Visible = false;
+            // 
             // cuiSeparator1
             // 
             this.cuiSeparator1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -173,23 +186,24 @@
             this.cuiLabel4.TabIndex = 9;
             this.cuiLabel4.Load += new System.EventHandler(this.cuiLabel4_Load);
             // 
-            // detectedLabel
+            // device_name_label
             // 
-            this.detectedLabel.Content = "Device\\ detected,\\ making\\ checks\\.\\.";
-            this.detectedLabel.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.detectedLabel.ForeColor = System.Drawing.Color.DimGray;
-            this.detectedLabel.HorizontalAlignment = CuoreUI.Controls.cuiLabel.HorizontalAlignments.Left;
-            this.detectedLabel.Location = new System.Drawing.Point(18, 46);
-            this.detectedLabel.Name = "detectedLabel";
-            this.detectedLabel.Size = new System.Drawing.Size(629, 18);
-            this.detectedLabel.TabIndex = 12;
-            this.detectedLabel.Visible = false;
+            this.device_name_label.Content = "Device\\ Name\\ Label\\ \\(not\\ visible\\ at\\ runtime\\)";
+            this.device_name_label.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.device_name_label.ForeColor = System.Drawing.Color.DimGray;
+            this.device_name_label.HorizontalAlignment = CuoreUI.Controls.cuiLabel.HorizontalAlignments.Left;
+            this.device_name_label.Location = new System.Drawing.Point(18, 0);
+            this.device_name_label.Name = "device_name_label";
+            this.device_name_label.Size = new System.Drawing.Size(629, 18);
+            this.device_name_label.TabIndex = 13;
+            this.device_name_label.Visible = false;
             // 
             // usbDebugRemind
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
+            this.Controls.Add(this.device_name_label);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.cuiLabel3);
             this.Controls.Add(this.cuiLabel2);
@@ -198,6 +212,7 @@
             this.Enabled = false;
             this.Name = "usbDebugRemind";
             this.Size = new System.Drawing.Size(800, 450);
+            this.Tag = "hi";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -214,5 +229,6 @@
         public CuoreUI.Controls.cuiLabel cuiLabel4;
         private CuoreUI.Controls.cuiSeparator cuiSeparator1;
         public CuoreUI.Controls.cuiLabel detectedLabel;
+        public CuoreUI.Controls.cuiLabel device_name_label;
     }
 }

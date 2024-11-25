@@ -16,22 +16,22 @@ namespace ChangeTheIconShape
         private void Form1_Click(object sender, EventArgs e)
         {
             usbReminderControl.cuiButton1.Click -= Form1_Click;
-            NewEdit();
+            NewEdit(usbReminderControl.device_name_label.Content as string);
             usbReminderControl.Dispose();
 
         }
 
         bool alreadyEditedDevice = false;
 
-        public void NewEdit()
+        public void NewEdit(string device)
         {
             alreadyEditedDevice = true;
-            ChangeScene(new EditDevice());
+            ChangeScene(new EditDevice(device));
         }
 
-        public void NoSupport()
+        public void NoSupport(string deviceName)
         {
-            ChangeScene(new DeviceNotSupported());
+            ChangeScene(new DeviceNotSupported(deviceName));
         }
 
         private void ChangeScene(Control targetControl)
@@ -50,10 +50,8 @@ namespace ChangeTheIconShape
                 }
                 finally
                 {
-
+                    AnimateTransition();
                 }
-
-                AnimateTransition();
             }
         }
 
@@ -77,10 +75,10 @@ namespace ChangeTheIconShape
 
         public void StartOver()
         {
-            if (usbReminderControl != null && usbReminderControl.cuiButton1 != null)
+            alreadyEditedDevice = false;
+            if (usbReminderControl != null)
             {
-                usbReminderControl.cuiButton1.Click -= Form1_Click;
-                usbReminderControl.Dispose();
+                usbReminderControl?.Dispose();
             }
 
             usbReminderControl = new usbDebugRemind();
@@ -92,7 +90,7 @@ namespace ChangeTheIconShape
         {
             if (alreadyEditedDevice && (controlContainer.Controls.Count > 0) == false)
             {
-                NewEdit();
+                NewEdit(usbReminderControl.device_name_label?.Content);
             }
         }
     }

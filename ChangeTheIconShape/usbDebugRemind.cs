@@ -19,7 +19,7 @@ namespace ChangeTheIconShape
         }
 
 
-        public string ConnectedDevice
+        public static string ConnectedDevice
         {
             get; private set;
         }
@@ -30,6 +30,8 @@ namespace ChangeTheIconShape
         static readonly string detectPhoneName = "shell settings get global device_name";
 
         static readonly string detectDevicesString = "List of devices attached";
+
+        public static string device_name = "";
 
         public struct commandResponse
         {
@@ -117,7 +119,7 @@ namespace ChangeTheIconShape
                 {
                     if (!await checkIfSupports())
                     {
-                        (Form1.ActiveForm as Form1)?.NoSupport();
+                        (Form1.ActiveForm as Form1)?.NoSupport(device_name);
                     }
 
                     return new boolStringStruct() { content = actualDevices.First(), boolValue = true };
@@ -149,6 +151,8 @@ namespace ChangeTheIconShape
         private async void cuiLabel4_Load(object sender, EventArgs e)
         {
             setState(0);
+
+            bool isFirstTime = true;
             while (!IsDisposed)
             {
                 commandResponse devicesResponse = await runCommand("devices");
@@ -156,16 +160,26 @@ namespace ChangeTheIconShape
 
                 if (devicesResponse.daemonRunning && deviceCheckResponse.boolValue)
                 {
-                    bool detectedNow = cuiLabel4.Content.StartsWith("Connected");
+                    bool detectedNow = cuiLabel4.Content.StartsWith("Connected") || ConnectedDevice != "";
 
-                    if (detectedNow != previouslyDetected && detectedNow == false)
+                    if (isFirstTime)
                     {
                         detectedLabel.Visible = true;
+                        isFirstTime = false;
                     }
                     else
                     {
-                        detectedLabel.Visible = false;
+                        if (detectedNow != previouslyDetected && detectedNow == false)
+                        {
+                            detectedLabel.Visible = true;
+                        }
+                        else
+                        {
+                            detectedLabel.Visible = false;
+                        }
                     }
+
+
 
 
                     previouslyDetected = false;
@@ -182,9 +196,12 @@ namespace ChangeTheIconShape
                             previouslyDetected = true;
 
                             ConnectedDevice = deviceCheckResponse.content;
+                            device_name = nameResponse.content;
 
                             cuiPictureBox1.ImageTint = Color.FromArgb(0, 101, 255);
                             cuiButton1.NormalBackground = Color.FromArgb(0, 101, 255);
+
+                            device_name_label.Content = nameResponse.content;
 
                             //MessageBox.Show(nameResponse.content);
                             setState(("Connected to " + deviceCheckResponse.content + $" ({nameResponse.content})!").Replace("\n", ""), Color.White);
@@ -194,8 +211,8 @@ namespace ChangeTheIconShape
                     }
                     else
                     {
-                        ConnectedDevice = "";
-
+                        device_name_label.Content = "";
+                     ConnectedDevice = "";
                         cuiButton1.NormalBackground = Color.FromArgb(32, 32, 32);
                         cuiPictureBox1.ImageTint = Color.White;
                         setState(0, Color.Gray);
@@ -203,8 +220,11 @@ namespace ChangeTheIconShape
                 }
                 else
                 {
+                    cuiButton1.NormalBackground = Color.FromArgb(32, 32, 32);
+                    cuiPictureBox1.ImageTint = Color.White;
+                    setState(0, Color.Gray);
 
-                    ConnectedDevice = "\n";
+                    ConnectedDevice = "";
                     previouslyDetected = false;
                     setState(2);
                 }
@@ -264,7 +284,9 @@ namespace ChangeTheIconShape
                 if (error.Length > 0)
                 {
                     response.content += $"\nErrors:\n{error}";
-                    (Form1.ActiveForm as Form1)?.NoSupport();
+
+
+                    (Form1.ActiveForm as Form1)?.NoSupport("");
                 }
             }
 

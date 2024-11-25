@@ -15,6 +15,13 @@ namespace ChangeTheIconShape
 {
     public partial class EditDevice : UserControl
     {
+        public static string device_name = "";
+        public EditDevice(string devicename)
+        {
+            InitializeComponent();
+            device_name = devicename;
+        }
+
         public EditDevice()
         {
             InitializeComponent();
@@ -144,7 +151,7 @@ namespace ChangeTheIconShape
 
                 if (tempIconShapes.Count < 1)
                 {
-                    (Form1.ActiveForm as Form1)?.NoSupport();
+                    (Form1.ActiveForm as Form1)?.NoSupport(device_name);
                     Dispose();
                 }
                 else
@@ -266,7 +273,7 @@ namespace ChangeTheIconShape
             {
                 foreach (Control c in Form1.ActiveForm.Controls)
                 {
-                    if (c is Panel || c.Tag.ToString() == "this")
+                    if (c is Panel && c.Tag.ToString() == "this")
                     {
                         return c as Panel;
                     }
@@ -300,7 +307,7 @@ namespace ChangeTheIconShape
 
             while (!IsDisposed)
             {
-                (Form1.ActiveForm as Form1)?.NewEdit();
+                (Form1.ActiveForm as Form1)?.NewEdit(device_name);
                 this?.Dispose();
             }
         }
