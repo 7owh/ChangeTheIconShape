@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChangeTheIconShape.Properties;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -20,6 +21,21 @@ namespace ChangeTheIconShape
         {
             InitializeComponent();
             device_name = devicename;
+            if (device_name.Trim() == "")
+            {
+                device();
+            }
+        }
+
+        static readonly string detectPhoneName = "shell settings get global device_name";
+
+        private async void device()
+        {
+            commandResponse nameResponse = await runCommand(detectPhoneName);
+            if (nameResponse.daemonRunning)
+            {
+                device_name = nameResponse.content;
+            }
         }
 
         public EditDevice()
@@ -82,84 +98,92 @@ namespace ChangeTheIconShape
 
             while (!IsDisposed)
             {
-
-                List<IconShape> tempIconShapes = new List<IconShape>();
-
-                commandResponse iconShapesResponse = await RunCommand(command_getIconShapes);
-                if (iconShapesResponse.daemonRunning)
+                try
                 {
-                    foreach (string _ in iconShapesResponse.content.Split('\n'))
+
+
+                    List<IconShape> tempIconShapes = new List<IconShape>();
+
+                    commandResponse iconShapesResponse = await RunCommand(command_getIconShapes);
+                    if (iconShapesResponse.daemonRunning)
                     {
-                        if (!_.Contains("com.android.theme.icon."))
+                        foreach (string _ in iconShapesResponse.content.Split('\n'))
                         {
-                            continue;
-                        }
+                            if (!_.Contains("com.android.theme.icon."))
+                            {
+                                continue;
+                            }
 
-                        IconShape iconShape = new IconShape();
+                            IconShape iconShape = new IconShape();
 
-                        string shapeString = _.Trim();
+                            string shapeString = _.Trim();
 
-                        if (shapeString == "")
-                        {
-                            continue;
-                        }
+                            if (shapeString == "")
+                            {
+                                continue;
+                            }
 
-                        if (shapeString.StartsWith(selectedString))
-                        {
-                            iconShape.Selected = true;
-                            shapeString = shapeString.Substring(selectedString.Length);
+                            if (shapeString.StartsWith(selectedString))
+                            {
+                                iconShape.Selected = true;
+                                shapeString = shapeString.Substring(selectedString.Length);
 
-                        }
-                        else if (shapeString.StartsWith(deselectedString))
-                        {
-                            iconShape.Selected = false;
-                            shapeString = shapeString.Substring(deselectedString.Length);
+                            }
+                            else if (shapeString.StartsWith(deselectedString))
+                            {
+                                iconShape.Selected = false;
+                                shapeString = shapeString.Substring(deselectedString.Length);
 
-                        }
+                            }
 
-                        shapeString = shapeString.Trim().Substring("com.android.theme.icon.".Length);
+                            shapeString = shapeString.Trim().Substring("com.android.theme.icon.".Length);
 
-                        iconShape.name = shapeString;
+                            iconShape.name = shapeString;
 
-                        tempIconShapes.Add(iconShape);
-                    }
-                }
-
-                if (pleaseStop == false)
-                {
-                    retrievalContainer.Visible = false;
-                    Enabled = true;
-                }
-
-                if (ListsAreDifferent(iconShapes, tempIconShapes))
-                {
-                    iconShapes = tempIconShapes;
-                    cuiListbox1.Items.Clear();
-
-                    foreach (IconShape shape in iconShapes)
-                    {
-                        cuiListbox1.Items.Add(shape.name);
-                        if (shape.Selected)
-                        {
-                            cuiListbox1.SelectedItem = shape.name;
-                            SelectedIconShape = shape.name;
+                            tempIconShapes.Add(iconShape);
                         }
                     }
 
-                    CheckIfShapeExistsInResourcesAndIfSoSetImage(cuiListbox1.SelectedItem as string);
-                }
-
-                if (tempIconShapes.Count < 1)
-                {
-                    (Form1.ActiveForm as Form1)?.NoSupport(device_name);
-                    Dispose();
-                }
-                else
-                {
                     if (pleaseStop == false)
                     {
+                        retrievalContainer.Visible = false;
                         Enabled = true;
                     }
+
+                    if (ListsAreDifferent(iconShapes, tempIconShapes))
+                    {
+                        iconShapes = tempIconShapes;
+                        cuiListbox1.Items.Clear();
+
+                        foreach (IconShape shape in iconShapes)
+                        {
+                            cuiListbox1.Items.Add(shape.name);
+                            if (shape.Selected)
+                            {
+                                cuiListbox1.SelectedItem = shape.name;
+                                SelectedIconShape = shape.name;
+                            }
+                        }
+
+                        CheckIfShapeExistsInResourcesAndIfSoSetImage(cuiListbox1.SelectedItem as string);
+                    }
+
+                    if (tempIconShapes.Count < 1)
+                    {
+                        (Form1.ActiveForm as Form1)?.NoSupport(device_name);
+                        Dispose();
+                    }
+                    else
+                    {
+                        if (pleaseStop == false)
+                        {
+                            Enabled = true;
+                        }
+                    }
+                }
+                catch
+                {
+
                 }
 
                 await Task.Delay(1000);
@@ -170,19 +194,27 @@ namespace ChangeTheIconShape
 
         private void CheckIfShapeExistsInResourcesAndIfSoSetImage(string selectedItem)
         {
-            System.Resources.ResourceManager resourceManager = Properties.Resources.ResourceManager;
-            var resourceNames = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentCulture, true, true);
-
-            foreach (System.Collections.DictionaryEntry entry in resourceNames)
+            try
             {
-                if (entry.Value is Bitmap bmp)
+
+                System.Resources.ResourceManager resourceManager = Properties.Resources.ResourceManager;
+                var resourceNames = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentCulture, true, true);
+
+                foreach (System.Collections.DictionaryEntry entry in resourceNames)
                 {
-                    if (entry.Key.ToString().Equals(selectedItem, StringComparison.OrdinalIgnoreCase))
+                    if (entry.Value is Bitmap bmp)
                     {
-                        cuiPictureBox1.Content = bmp;
-                        break;
+                        if (entry.Key.ToString().Equals(selectedItem, StringComparison.OrdinalIgnoreCase))
+                        {
+                            cuiPictureBox1.Content = bmp;
+                            break;
+                        }
                     }
                 }
+            }
+            catch
+            {
+                cuiPictureBox1.Content = Resources.nopreview;
             }
 
             cuiLabel3.Content = $"APPLIED: {SelectedIconShape}\nSELECTED: {selectedItem}";
@@ -208,56 +240,64 @@ namespace ChangeTheIconShape
         public static async Task<commandResponse> RunCommand(string inputCommand)
         {
             string formattedCommand = CreateAdbCommand(inputCommand);
-
-            ProcessStartInfo processInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c {formattedCommand}",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            if (Debugger.IsAttached)
-            {
-                //.SetText(formattedCommand);
-                //MessageBox.Show($"Running {formattedCommand}");
-            }
-
-            commandResponse response = new commandResponse();
-
-            using (Process process = new Process { StartInfo = processInfo, EnableRaisingEvents = true })
-            {
-                StringBuilder output = new StringBuilder();
-                StringBuilder error = new StringBuilder();
-
-                process.OutputDataReceived += (sender, args) =>
+  
+                ProcessStartInfo processInfo = new ProcessStartInfo
                 {
-                    if (args.Data != null)
-                        output.AppendLine(args.Data);
+                    FileName = "cmd.exe",
+                    Arguments = $"/c {formattedCommand}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 };
 
-                process.ErrorDataReceived += (sender, args) =>
+                if (Debugger.IsAttached)
                 {
-                    if (args.Data != null)
-                        error.AppendLine(args.Data);
-                };
+                    //.SetText(formattedCommand);
+                    //MessageBox.Show($"Running {formattedCommand}");
+                }
 
-                process.Start();
+                commandResponse response = new commandResponse();
 
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-
-                await Task.Delay(1000);
-
-                response.content = output.ToString();
-
-                if (error.Length > 0)
+            try
+            {
+                using (Process process = new Process { StartInfo = processInfo, EnableRaisingEvents = true })
                 {
-                    response.content += $"\nErrors:\n{error}";
+                    StringBuilder output = new StringBuilder();
+                    StringBuilder error = new StringBuilder();
+
+                    process.OutputDataReceived += (sender, args) =>
+                    {
+                        if (args.Data != null)
+                            output.AppendLine(args.Data);
+                    };
+
+                    process.ErrorDataReceived += (sender, args) =>
+                    {
+                        if (args.Data != null)
+                            error.AppendLine(args.Data);
+                    };
+
+                    process.Start();
+
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    await Task.Delay(1000);
+
+                    response.content = output.ToString();
+
+                    if (error.Length > 0)
+                    {
+                        response.content += $"\nErrors:\n{error}";
+                    }
                 }
             }
+            catch
+            {
+
+            }
+  
 
             return response;
         }
@@ -300,7 +340,7 @@ namespace ChangeTheIconShape
 
                 if (shape.name != (cuiListbox1.SelectedItem as string))
                 {
-                    await ToggleShape(shape.name, false);
+                    _ = ToggleShape(shape.name, false);
                 }
                 i++;
             }

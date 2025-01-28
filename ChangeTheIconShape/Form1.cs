@@ -16,43 +16,45 @@ namespace ChangeTheIconShape
         private void Form1_Click(object sender, EventArgs e)
         {
             usbReminderControl.cuiButton1.Click -= Form1_Click;
-            NewEdit(usbReminderControl.device_name_label.Content as string);
-            usbReminderControl.Dispose();
+            NewEdit(usbReminderControl?.device_name_label.Content);
+            usbReminderControl?.Dispose();
 
         }
 
-        bool alreadyEditedDevice = false;
-
         public void NewEdit(string device)
         {
-            alreadyEditedDevice = true;
             ChangeScene(new EditDevice(device));
         }
 
         public void NoSupport(string deviceName)
         {
-            ChangeScene(new DeviceNotSupported(deviceName));
+     
+                ChangeScene(new DeviceNotSupported());
+            
         }
 
         private void ChangeScene(Control targetControl)
         {
-            controlContainer.Controls.Add(targetControl);
-
             if (controlContainer.Controls.Count > 1)
             {
 
                 var oldControl = controlContainer.Controls[0];
-                controlContainer.Controls.Remove(oldControl);
 
                 try
                 {
-                    oldControl.Dispose();
+                    oldControl?.Dispose();
                 }
                 finally
                 {
-                    AnimateTransition();
                 }
+
+                controlContainer.Controls?.Clear();
             }
+
+
+            controlContainer.Controls.Add(targetControl);
+
+            AnimateTransition();
         }
 
         private void cuiButton1_Click(object sender, EventArgs e)
@@ -75,7 +77,8 @@ namespace ChangeTheIconShape
 
         public void StartOver()
         {
-            alreadyEditedDevice = false;
+            controlContainer.Controls.Clear();
+
             if (usbReminderControl != null)
             {
                 usbReminderControl?.Dispose();
@@ -84,14 +87,6 @@ namespace ChangeTheIconShape
             usbReminderControl = new usbDebugRemind();
             usbReminderControl.cuiButton1.Click += Form1_Click;
             ChangeScene(usbReminderControl);
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (alreadyEditedDevice && (controlContainer.Controls.Count > 0) == false)
-            {
-                NewEdit(usbReminderControl.device_name_label?.Content);
-            }
         }
     }
 }

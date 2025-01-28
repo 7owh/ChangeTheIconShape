@@ -83,6 +83,16 @@ namespace ChangeTheIconShape.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap nopreview {
+            get {
+                object obj = ResourceManager.GetObject("nopreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap pebble {
             get {
                 object obj = ResourceManager.GetObject("pebble", resourceCulture);

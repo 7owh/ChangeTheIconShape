@@ -13,16 +13,16 @@ namespace ChangeTheIconShape
         public DeviceNotSupported()
         {
             InitializeComponent();
+            InitializeText();
         }
 
         string device_name = "";
 
         public DeviceNotSupported(string deviceName)
         {
-            device_name = deviceName;
-            InitializeText();
+       
             InitializeComponent();
-
+            InitializeText();
         }
 
         private async void InitializeText()
@@ -58,15 +58,7 @@ namespace ChangeTheIconShape
             {
                 if (!IsDisposed)
                 {
-                    try
-                    {
-                        (Form1.ActiveForm as Form1).StartOver();
-                    }
-                    finally
-                    {
-
-                    }
-
+                    (Form1.ActiveForm as Form1)?.StartOver();
                     Dispose();
                 }
 

@@ -96,34 +96,43 @@ namespace ChangeTheIconShape
 
         async Task<boolStringStruct> detectIfOnlyOneDeviceConnected(string responseMessage)
         {
-            if (responseMessage.StartsWith(detectDevicesString))
+            try
             {
-                responseMessage = responseMessage.Substring(detectDevicesString.Length - 1);
-                string[] devices = responseMessage.Split('\n');
 
-                List<string> actualDevices = new List<string>();
-
-                foreach (string device in devices)
+                if (responseMessage.StartsWith(detectDevicesString))
                 {
-                    if (device.Trim().EndsWith("device"))
+                    responseMessage = responseMessage.Substring(detectDevicesString.Length - 1);
+                    string[] devices = responseMessage.Split('\n');
+
+                    List<string> actualDevices = new List<string>();
+
+                    foreach (string device in devices)
                     {
-                        string sanitizedDevice = (device.Trim().Substring(0, device.Length - "device".Length - 1)).Trim();
-                        if (sanitizedDevice != "")
+                        if (device.Trim().EndsWith("device"))
                         {
-                            actualDevices.Add(sanitizedDevice);
+                            string sanitizedDevice = (device.Trim().Substring(0, device.Length - "device".Length - 1)).Trim();
+                            if (sanitizedDevice != "")
+                            {
+                                actualDevices.Add(sanitizedDevice);
+                            }
                         }
                     }
-                }
 
-                if (actualDevices.Count == 1)
-                {
-                    if (!await checkIfSupports())
+                    if (actualDevices.Count == 1)
                     {
-                        (Form1.ActiveForm as Form1)?.NoSupport(device_name);
-                    }
+                        if (!await checkIfSupports())
+                        {
+                            (Form1.ActiveForm as Form1)?.NoSupport(device_name);
+                        }
 
-                    return new boolStringStruct() { content = actualDevices.First(), boolValue = true };
+                        return new boolStringStruct() { content = actualDevices.First(), boolValue = true };
+                    }
                 }
+
+            }
+            catch
+            {
+
             }
 
             return new boolStringStruct() { boolValue = false };
@@ -131,16 +140,24 @@ namespace ChangeTheIconShape
 
         private async Task<bool> checkIfSupports()
         {
-            commandResponse iconShapesResponse = await RunCommand(command_getIconShapes);
-            if (iconShapesResponse.daemonRunning)
+            try
             {
-                foreach (string _ in iconShapesResponse.content.Split('\n'))
+
+                commandResponse iconShapesResponse = await RunCommand(command_getIconShapes);
+                if (iconShapesResponse.daemonRunning)
                 {
-                    if (_.Contains("com.android.theme.icon."))
+                    foreach (string _ in iconShapesResponse.content.Split('\n'))
                     {
-                        return true;
+                        if (_.Contains("com.android.theme.icon."))
+                        {
+                            return true;
+                        }
                     }
                 }
+            }
+            catch
+            {
+
             }
 
             return false;
@@ -155,81 +172,88 @@ namespace ChangeTheIconShape
             bool isFirstTime = true;
             while (!IsDisposed)
             {
-                commandResponse devicesResponse = await runCommand("devices");
-                boolStringStruct deviceCheckResponse = await detectIfOnlyOneDeviceConnected(devicesResponse.content);
-
-                if (devicesResponse.daemonRunning && deviceCheckResponse.boolValue)
+                try
                 {
-                    bool detectedNow = cuiLabel4.Content.StartsWith("Connected") || ConnectedDevice != "";
+                    commandResponse devicesResponse = await runCommand("devices");
+                    boolStringStruct deviceCheckResponse = await detectIfOnlyOneDeviceConnected(devicesResponse.content);
 
-                    if (isFirstTime)
+                    if (devicesResponse.daemonRunning && deviceCheckResponse.boolValue)
                     {
-                        detectedLabel.Visible = true;
-                        isFirstTime = false;
-                    }
-                    else
-                    {
-                        if (detectedNow != previouslyDetected && detectedNow == false)
+                        bool detectedNow = cuiLabel4.Content.StartsWith("Connected") || ConnectedDevice != "";
+
+                        if (isFirstTime)
                         {
                             detectedLabel.Visible = true;
+                            isFirstTime = false;
                         }
                         else
                         {
-                            detectedLabel.Visible = false;
+                            if (detectedNow != previouslyDetected && detectedNow == false)
+                            {
+                                detectedLabel.Visible = true;
+                            }
+                            else
+                            {
+                                detectedLabel.Visible = false;
+                            }
                         }
-                    }
 
 
 
 
-                    previouslyDetected = false;
+                        previouslyDetected = false;
 
-                    if (deviceCheckResponse.boolValue)
-                    {
-
-                        commandResponse nameResponse = await runCommand(detectPhoneName);
-                        if (nameResponse.daemonRunning)
+                        if (deviceCheckResponse.boolValue)
                         {
-                            Enabled = true;
+
+                            commandResponse nameResponse = await runCommand(detectPhoneName);
+                            if (nameResponse.daemonRunning)
+                            {
+                                Enabled = true;
 
 
-                            previouslyDetected = true;
+                                previouslyDetected = true;
 
-                            ConnectedDevice = deviceCheckResponse.content;
-                            device_name = nameResponse.content;
+                                ConnectedDevice = deviceCheckResponse.content;
+                                device_name = nameResponse.content;
 
-                            cuiPictureBox1.ImageTint = Color.FromArgb(0, 101, 255);
-                            cuiButton1.NormalBackground = Color.FromArgb(0, 101, 255);
+                                cuiPictureBox1.ImageTint = Color.FromArgb(0, 101, 255);
+                                cuiButton1.NormalBackground = Color.FromArgb(0, 101, 255);
 
-                            device_name_label.Content = nameResponse.content;
+                                device_name_label.Content = nameResponse.content;
 
-                            //MessageBox.Show(nameResponse.content);
-                            setState(("Connected to " + deviceCheckResponse.content + $" ({nameResponse.content})!").Replace("\n", ""), Color.White);
+                                //MessageBox.Show(nameResponse.content);
+                                setState(("Connected to " + deviceCheckResponse.content + $" ({nameResponse.content})!").Replace("\n", ""), Color.White);
 
-                            detectedLabel.Visible = false;
+                                detectedLabel.Visible = false;
+                            }
+                        }
+                        else
+                        {
+                            device_name_label.Content = "";
+                            ConnectedDevice = "";
+                            cuiButton1.NormalBackground = Color.FromArgb(32, 32, 32);
+                            cuiPictureBox1.ImageTint = Color.White;
+                            setState(0, Color.Gray);
                         }
                     }
                     else
                     {
-                        device_name_label.Content = "";
-                     ConnectedDevice = "";
                         cuiButton1.NormalBackground = Color.FromArgb(32, 32, 32);
                         cuiPictureBox1.ImageTint = Color.White;
                         setState(0, Color.Gray);
+
+                        ConnectedDevice = "";
+                        previouslyDetected = false;
+                        setState(2);
                     }
+
+                    previouslyDetected = devicesResponse.daemonRunning;
                 }
-                else
+                catch
                 {
-                    cuiButton1.NormalBackground = Color.FromArgb(32, 32, 32);
-                    cuiPictureBox1.ImageTint = Color.White;
-                    setState(0, Color.Gray);
 
-                    ConnectedDevice = "";
-                    previouslyDetected = false;
-                    setState(2);
                 }
-
-                previouslyDetected = devicesResponse.daemonRunning;
             }
         }
 
@@ -255,39 +279,47 @@ namespace ChangeTheIconShape
 
             commandResponse response = new commandResponse();
 
-            using (Process process = new Process { StartInfo = processInfo, EnableRaisingEvents = true })
+            try
             {
-                StringBuilder output = new StringBuilder();
-                StringBuilder error = new StringBuilder();
 
-                process.OutputDataReceived += (sender, args) =>
+                using (Process process = new Process { StartInfo = processInfo, EnableRaisingEvents = true })
                 {
-                    if (args.Data != null)
-                        output.AppendLine(args.Data);
-                };
+                    StringBuilder output = new StringBuilder();
+                    StringBuilder error = new StringBuilder();
 
-                process.ErrorDataReceived += (sender, args) =>
-                {
-                    if (args.Data != null)
-                        error.AppendLine(args.Data);
-                };
+                    process.OutputDataReceived += (sender, args) =>
+                    {
+                        if (args.Data != null)
+                            output.AppendLine(args.Data);
+                    };
 
-                process.Start();
+                    process.ErrorDataReceived += (sender, args) =>
+                    {
+                        if (args.Data != null)
+                            error.AppendLine(args.Data);
+                    };
 
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
+                    process.Start();
 
-                await Task.Delay(1000);
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
 
-                response.content = output.ToString();
+                    await Task.Delay(1000);
 
-                if (error.Length > 0)
-                {
-                    response.content += $"\nErrors:\n{error}";
+                    response.content = output.ToString();
+
+                    if (error.Length > 0)
+                    {
+                        response.content += $"\nErrors:\n{error}";
 
 
-                    (Form1.ActiveForm as Form1)?.NoSupport("");
+                        (Form1.ActiveForm as Form1)?.NoSupport("");
+                    }
                 }
+            }
+            catch
+            {
+
             }
 
             return response;
